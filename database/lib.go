@@ -39,6 +39,7 @@ func CreateT(db *pg.DB, entity []interface{}) {
 		err := db.Model(model).CreateTable(&orm.CreateTableOptions{
 			IfNotExists: true,
 		})
+
 		PanicIf(err)
 	}
 }

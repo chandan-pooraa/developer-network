@@ -1,7 +1,7 @@
 package main
 
 import (
-	"developer-network/api/post"
+	"developer-network/api/user"
 	"developer-network/database"
 
 	"github.com/gin-gonic/gin"
@@ -17,9 +17,10 @@ func main() {
 	defer database.DB.Close()
 	model := []interface{}{
 		(*(database.Post))(nil),
+		(*(database.User))(nil),
 	}
 	database.CreateT(database.DB, model)
-	post.Init(router)
+	user.Init(router)
 
 	router.Run()
 }

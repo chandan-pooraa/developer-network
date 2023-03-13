@@ -46,6 +46,8 @@ func GetuserbyID(c *gin.Context) {
 	c.JSON(http.StatusOK, userget)
 
 }
+
+
 func Updateuser(c *gin.Context) {
 	id := c.Param("id")
 	idFloat, err := strconv.ParseFloat(id, 64)

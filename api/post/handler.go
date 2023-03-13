@@ -21,7 +21,7 @@ func CreateNewPost(c *gin.Context) {
 	_, err = database.DB.Model(&newPost).Insert()
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"message": "Error in INsertion",
+			"message": "Error in Insertion",
 		})
 	}
 	api.PanicIf(err)

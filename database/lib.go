@@ -3,6 +3,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/go-pg/pg/v10"
@@ -21,16 +22,18 @@ var m interface{}
 func Dbconnection() {
 	DB = pg.Connect(&pg.Options{
 		User:     "postgres",
-		Password: "1234",
+		Password: "123",
 		Addr:     "localhost:5432",
 		Database: "postgres",
 	})
 	ctx := context.Background()
 	err := DB.Ping(ctx)
 	if err != nil {
-		log.Fatal("Failed to connect to db")
+		log.Fatal("Connection Failed!!")
+	} else {
+		fmt.Println("DB Connected")
 	}
-	PanicIf(err)
+//	PanicIf(err)
 }
 
 func CreateT() {
@@ -42,6 +45,7 @@ func CreateT() {
 		err := DB.Model(model).CreateTable(&orm.CreateTableOptions{
 			IfNotExists: true,
 		})
+
 		PanicIf(err)
 	}
 }

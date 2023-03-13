@@ -15,11 +15,7 @@ func main() {
 	router := gin.Default()
 	database.Dbconnection()
 	defer database.DB.Close()
-	model := []interface{}{
-		(*(database.Post))(nil),
-	}
-	database.CreateT(database.DB, model)
+	database.CreateT()
 	post.Init(router)
-
 	router.Run()
 }

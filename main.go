@@ -1,7 +1,6 @@
 package main
 
 import (
-	"developer-network/api/comment"
 	"developer-network/database"
 
 	//"go/doc/comment"
@@ -37,8 +36,6 @@ func main() {
 	defer database.DB.Close()
 
 	database.CreateT()
-
-	comment.Init(r)
 
 	r.Run()
 }

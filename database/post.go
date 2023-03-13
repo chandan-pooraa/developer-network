@@ -5,7 +5,7 @@ type Post struct {
 	Id      int    `json:"id" pg:"id,pk"`
 	Title   string `json:"title" pg:"title,notnull"`
 	Content string `json:"content" pg:"content,notnull"`
-	UserId  int    `json:"uid" `
+	UserId  int    `json:"uid"`
 }
 
 type Likes struct {

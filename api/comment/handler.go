@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,23 +29,22 @@ func CreateNewComment(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Comment created Successfully",
 	})
- }
+}
 
- func ReadComments(c *gin.Context) {
+func ReadComments(c *gin.Context) {
 	var commentRows []database.Comment
 	c.IndentedJSON(http.StatusOK, commentRows)
- }
+}
 
-
- func ReadCommentbyId(c *gin.Context) {
+func ReadCommentbyId(c *gin.Context) {
 	var newComment database.Comment
 	// id := c.Param("id")
 	id, err := strconv.Atoi(c.Param("id"))
-    if err != nil {
-        // ... handle error
-        // panic(err)
+	if err != nil {
+		// ... handle error
+		// panic(err)
 		fmt.Println("Error in Fetching data!!")
-    }
+	}
 	newComment.Id = id
 	err = database.DB.Model(&newComment).WherePK().Select()
 	fmt.Println(newComment)
@@ -57,14 +57,20 @@ func CreateNewComment(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"newComment": newComment,
 	})
- }
+}
 
 
- func UpdateComment(c *gin.Context) {
+func UpdateComment(c *gin.Context) {
 	id := c.Param("id")
 	idint, err := strconv.ParseFloat(id, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "error in conversion",
+		})
+		return
+	}
 	updateComment := &database.Comment{Id: int(idint)}
-	err = database.DB.Model(&updateComment).Select()
+	err = database.DB.Model(updateComment).WherePK().Select()
 
 	//err = database.DB.Model(&newComment).Where("id = ?", idint).Select()
 	if err != nil {
@@ -73,31 +79,40 @@ func CreateNewComment(c *gin.Context) {
 		})
 		return
 	}
-	
-	err=c.Bind(updateComment)
+
+	err = c.Bind(updateComment)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "newComment Binding error",
 		})
 		return
 	}
-	_, err = database.DB.Model(updateComment).Update()
-
-
+	_, err = database.DB.Model(updateComment).WherePK().Update()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "error in updation",
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"newComment": "Comment Updated Successfully!!",
 	})
 
- }
- 
- 
- func DeleteComment(c *gin.Context) {
+}
+
+func DeleteComment(c *gin.Context) {
 	var newComment database.Comment
 	id := c.Param("id")
 	idint, err := strconv.ParseFloat(id, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "error in conversion",
+		})
+		return
+	}
 
 	err = database.DB.Model(&newComment).Where("id = ?", idint).Select()
-	
+
 	//err = database.DB.Model(&newComment).Column("title", "content").Where("id = ?", id).Select()
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{

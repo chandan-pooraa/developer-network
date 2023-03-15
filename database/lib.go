@@ -1,4 +1,3 @@
-// Contains all the common methods related to database
 package database
 
 import (
@@ -17,7 +16,6 @@ func PanicIf(err error) {
 }
 
 var DB *pg.DB
-var m interface{}
 
 func Dbconnection() {
 	DB = pg.Connect(&pg.Options{
@@ -36,13 +34,11 @@ func Dbconnection() {
 //	PanicIf(err)
 }
 
-func CreateT() {
-	models:= []interface{}{
-		(*Post)(nil),
-	}
-	for _, model := range models {
+func CreateT(db *pg.DB, entity []interface{}) {
 
-		err := DB.Model(model).CreateTable(&orm.CreateTableOptions{
+	for _, model := range entity {
+
+		err := db.Model(model).CreateTable(&orm.CreateTableOptions{
 			IfNotExists: true,
 		})
 

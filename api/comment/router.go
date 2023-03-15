@@ -16,7 +16,6 @@ func Init(router *gin.Engine) {
 		router.POST("/newcomment", CreateNewComment)
 		router.PATCH("/upcomment/:id", UpdateComment)
 		router.DELETE("/delcomment/:id", DeleteComment)
-
 	
 	
 }

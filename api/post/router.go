@@ -12,7 +12,10 @@ func Init(router *gin.Engine) {
 	})
 	post := router.Group("/post")
 	{
-
-		post.POST("/newpost", CreateNewPost)
+		post.POST("/new", CreateNewPost)
+		post.GET("/showposts", ShowPosts)
+		post.GET("/show/:id", GetPostById)
+		post.PATCH("/update/:id", UpdatePostById)
+		post.DELETE("delete/:id", DeletePost)
 	}
 }

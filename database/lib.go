@@ -17,6 +17,7 @@ func PanicIf(err error) {
 }
 
 var DB *pg.DB
+var m interface{}
 
 func Dbconnection() {
 	DB = pg.Connect(&pg.Options{
@@ -32,14 +33,16 @@ func Dbconnection() {
 	} else {
 		fmt.Println("DB Connected")
 	}
-//	PanicIf(err)
+	//	PanicIf(err)
 }
 
-func CreateT(db *pg.DB, entity []interface{}) {
+func CreateT() {
+	models := []interface{}{
+		(*Post)(nil), (*User)(nil), (*Comment)(nil),
+	}
+	for _, model := range models {
 
-	for _, model := range entity {
-
-		err := db.Model(model).CreateTable(&orm.CreateTableOptions{
+		err := DB.Model(model).CreateTable(&orm.CreateTableOptions{
 			IfNotExists: true,
 		})
 

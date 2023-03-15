@@ -105,6 +105,85 @@ func CreateNewMedia(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Media created successfully"})
 }
 
+func UpdateMedia(c *gin.Context) {
+	id := c.Param("id")
+
+	mediaById, err := mediaById(id)
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "media with id doesn't exists"})
+		return
+	}
+
+	// Get the media from the database
+	updateMedia := &db.Media{ID: mediaById.ID}
+	err = db.DB.Model(updateMedia).WherePK().Select()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Update the media fields
+	err = c.BindJSON(updateMedia)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Save the updated media back to the database
+	_, err = db.DB.Model(updateMedia).WherePK().Update()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	//working with files
+	//reading the media files stored in /tmp/media directory
+	files, fileErr := os.ReadDir("/tmp/media")
+	if fileErr != nil {
+		panic(fileErr)
+	}
+
+	for _, file := range files {
+		log.Println(file.Name(), file.Type().IsRegular())
+		if !file.IsDir() {
+			//checking whether directory /media/user exists or not
+			_, dirErr := os.Stat("./mediaData/user/")
+			if os.IsNotExist(dirErr) {
+				//creating directory for storing media data
+				dirErr := os.MkdirAll("./mediaData/user/", 0755)
+				if dirErr != nil {
+					log.Fatal(dirErr)
+				}
+			}
+
+				//checking whether directory /media/user/USERID exists or not
+				_, err := os.Stat("./mediaData/user/" + strconv.FormatUint(updateMedia.ID, 10))
+				if os.IsNotExist(err) {
+					//creating directory for storing media data
+					errDir := os.Mkdir(strconv.FormatUint(updateMedia.ID, 10), 0755)
+					if errDir != nil {
+						log.Fatal(err)
+					}
+
+					//moving directory /USERID to /mediaData/user/
+					errMov := os.Rename((strconv.FormatUint(updateMedia.ID, 10)), "./mediaData/user/"+(strconv.FormatUint(updateMedia.ID, 10)))
+					if errMov != nil {
+						log.Fatal(errMov)
+					}
+				}
+				//moving media files from /tmp/media to /mediaData/user/USERID
+				errMov := os.Rename("/tmp/media/"+file.Name(), "./mediaData/user/"+strconv.FormatUint(updateMedia.ID, 10)+"/"+file.Name())
+				if errMov != nil {
+					log.Fatal(errMov)
+				}
+			
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Media updated successfully"})
+
+}
+
 func DeleteMediaById(c *gin.Context) {
 	id := c.Param("id")
 

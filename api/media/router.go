@@ -14,6 +14,8 @@ func Init(router *gin.Engine) {
 
 	router.POST("/newmedia", CreateNewMedia)
 
+	router.PUT("./media/:id", UpdateMedia)
+
 	router.DELETE("/media/:id", DeleteMediaById)
 
 }

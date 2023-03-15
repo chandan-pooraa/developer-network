@@ -33,12 +33,12 @@ func Dbconnection() {
 	} else {
 		fmt.Println("DB Connected")
 	}
-//	PanicIf(err)
+	//	PanicIf(err)
 }
 
 func CreateT() {
-	models:= []interface{}{
-		(*Post)(nil),
+	models := []interface{}{
+		(*Post)(nil), (*User)(nil), (*Comment)(nil),
 	}
 	for _, model := range models {
 

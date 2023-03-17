@@ -17,7 +17,6 @@ func PanicIf(err error) {
 }
 
 var DB *pg.DB
-var m interface{}
 
 func Dbconnection() {
 	DB = pg.Connect(&pg.Options{
@@ -38,7 +37,7 @@ func Dbconnection() {
 
 func CreateT() {
 	models := []interface{}{
-		(*Post)(nil), (*User)(nil), (*Comment)(nil),
+		(*Post)(nil), (*User)(nil), (*Comment)(nil), (*Media)(nil),
 	}
 	for _, model := range models {
 
